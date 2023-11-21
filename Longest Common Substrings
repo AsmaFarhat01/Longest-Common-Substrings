@@ -1,0 +1,59 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Returns the longest common substring of X[0..m-1] and Y[0..n-1]
+string LCSubStr(char* X, char* Y, int m, int n) {
+    int** LCSuff = new int*[m + 1];
+    for (int i = 0; i <= m; ++i) {
+        LCSuff[i] = new int[n + 1];
+    }
+
+    int result = 0; // To store length of the longest common substring
+    int endIdx = 0; // To store the ending index of the longest common substring
+
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0 || j == 0)
+                LCSuff[i][j] = 0;
+            else if (X[i - 1] == Y[j - 1]) {
+                LCSuff[i][j] = LCSuff[i - 1][j - 1] + 1;
+                if (LCSuff[i][j] > result) {
+                    result = LCSuff[i][j];
+                    endIdx = i - 1;
+                }
+            } else {
+                LCSuff[i][j] = 0;
+            }
+        }
+    }
+
+    string commonSubstring(X + endIdx - result + 1, result);
+
+    for (int i = 0; i <= m; ++i) {
+        delete[] LCSuff[i];
+    }
+    delete[] LCSuff;
+
+    return commonSubstring;
+}
+
+int main() {
+    const int MAX_LENGTH = 1000; // Assuming a maximum length for input strings
+    char X[MAX_LENGTH], Y[MAX_LENGTH];
+
+    cout << "Enter the first string: ";
+    cin.getline(X, MAX_LENGTH);
+
+    cout << "Enter the second string: ";
+    cin.getline(Y, MAX_LENGTH);
+
+    int m = strlen(X);
+    int n = strlen(Y);
+
+    string commonSubstring = LCSubStr(X, Y, m, n);
+
+    cout << "Longest Common Substring is: " << commonSubstring << endl;
+
+    return 0;
+}
